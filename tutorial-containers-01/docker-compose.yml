@@ -9,7 +9,6 @@ services:
        - ./:/scr
     ports:
        - "80:80"
-    command: tail -F /dev/null
 
   button:
     container_name: button
@@ -18,5 +17,4 @@ services:
       dockerfile: Dockerfile
     volumes:
        - ./:/scr
-    command: tail -F /dev/null
 
