@@ -1,0 +1,22 @@
+version: "3.5"
+services:
+  led:
+    container_name: led
+    build:
+      context: ./container-led/
+      dockerfile: Dockerfile
+    volumes:
+       - ./:/scr
+    ports:
+       - "80:80"
+    command: tail -F /dev/null
+
+  button:
+    container_name: button
+    build: 
+      context: ./container-button/
+      dockerfile: Dockerfile
+    volumes:
+       - ./:/scr
+    command: tail -F /dev/null
+
