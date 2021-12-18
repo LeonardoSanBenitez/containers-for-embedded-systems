@@ -9,12 +9,22 @@ services:
        - ./:/scr
     ports:
        - "80:80"
+    privileged: true
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
 
   button:
     container_name: button
-    build: 
+    build:
       context: ./container-button/
       dockerfile: Dockerfile
     volumes:
        - ./:/scr
+    privileged: true
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
+
+
+
+
 
