@@ -11,9 +11,9 @@
             "loggingOptions": "",
             "registryCredentials": {
               "kwsdiaacr": {
-                "username": "${ACR_USER}",
-                "password": "${ACR_PASSWORD}",
-                "address": "kwsdiaacr.azurecr.io"
+                "username": "${REGISTRY_USERNAME}",
+                "password": "${REGISTRY_PASSWORD}",
+                "address": "${REGISTRY_ADDRESS}"
               }
             }
           }
@@ -111,29 +111,6 @@
                   "Privileged": true,
                   "Runtime": "nvidia"
                 }
-              }
-            },
-            "env": {
-              "CLOUD_STORAGE_CONNECTION": {
-                "value": "${CLOUD_STORAGE_CONNECTION}"
-              },
-              "LOCAL_STORAGE_CONNECTION": {
-                "value": "${LOCAL_STORAGE_CONNECTION}"
-              },
-              "LOCAL_STORAGE_CONNECTION_RESULTS": {
-                "value": "${LOCAL_STORAGE_CONNECTION_RESULTS}"
-              },
-              "STORAGE_CONTAINER": {
-                "value": "localcont1"
-              },
-              "STORAGE_CONTAINER_RESULTS": {
-                "value": "localcont1results"
-              },
-              "LD_LIBRARY_PATH": {
-                "value": "/opt/vc/lib"
-              },
-              "PATH": {
-                "value": "$PATH:/opt/vc/bin"
               }
             }
           },

@@ -1,11 +1,15 @@
 on the dev machine, install:
 * azure cli
+* azure-iot
 * terraform
 
 
 we have to store the terraform state file somewhere, and I choose azure blob storage (could be AWS S3, Google Cloud Storage or even your local computer)
 
-basic setup:
+# Code modifications
+TODO
+
+# Infra setup
 
 ```bash
 #!/bin/bash
@@ -26,7 +30,7 @@ az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOU
 terraform init
 terraform apply
 
-
+# Device enrollment
 unfortunatelly, the define enrollment cannot be dne with terraform, and we'll use azure cli again
 
 ```bash
@@ -40,18 +44,17 @@ az iot dps enrollment-group create \
     --provisioning-status enabled
 ```
 
+# Container build
+our containers won't build themselves when deploying, we need to build them beforehand and store their images somewhere. I'll store in Azure Container Registry (could be Docker Registry, AWS ECR, etc)
 
-
-our containers won't build themselves in the edge device, we need to build them beforehand and store their images somewhere. I'll store in Azure Container Registry (could be Docker Registry, AWS ECR, etc)
-
-note that you'll have to 
+as we are using ARM32 images, the easier way to build this images is in a ARM32 device (in our jetson)
 
 ```bash
 # Should be run from the folder `tutorial-containers-02`
 # You can get the login URI and credentials from: Portal -> ACR -> Access keys
-REGISTRY_USERNAME=tutorialcontainers
-REGISTRY_PASSWORD=6NGJF6TF36/fkNp/M5hpq=XEGpJbActw
-REGISTRY_ADDRESS=tutorialcontainers.azurecr.io
+REGISTRY_USERNAME=<secret>
+REGISTRY_PASSWORD=<secret>
+REGISTRY_ADDRESS=<secret>
 
 docker login ${REGISTRY_ADDRESS} --username $REGISTRY_USERNAME --password $REGISTRY_PASSWORD
 
@@ -61,4 +64,12 @@ DOCKERFILE_PATH=./container-led
 docker build -t ${IMAGE_NAME} -f ${DOCKERFILE_PATH}/Dockerfile ${DOCKERFILE_PATH}
 docker tag ${IMAGE_NAME} ${REGISTRY_ADDRESS}/${IMAGE_NAME}
 docker push ${REGISTRY_ADDRESS}/${IMAGE_NAME}
+
+IMAGE_NAME=button
+DOCKERFILE_PATH=./container-button
+docker build -t ${IMAGE_NAME} -f ${DOCKERFILE_PATH}/Dockerfile ${DOCKERFILE_PATH}
+docker tag ${IMAGE_NAME} ${REGISTRY_ADDRESS}/${IMAGE_NAME}
+docker push ${REGISTRY_ADDRESS}/${IMAGE_NAME}
 ```
+
+# Module deployment

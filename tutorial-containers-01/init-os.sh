@@ -3,3 +3,8 @@
 
 sudo apt-get install -y libhdf5-dev libssl-dev python3 python3-pip
 sudo pip3 install docker-compose==1.27.4
+
+# To use docker without sudo
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker 
