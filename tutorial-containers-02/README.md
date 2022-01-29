@@ -1,5 +1,6 @@
-# Code modifications
-TODO
+managing deployments with Azure Iot Edge
+
+the only change in the code was that I changed the container name from "led" to "led-acr" (to avoid conflicts if you have done the first part of this tutorial).
 
 # Infra setup
 portal -> iot hub -> create -> ...
@@ -9,33 +10,15 @@ our containers won't build themselves when deploying, we need to build them befo
 
 
 TODO: instructions to create ACR on portal
-take the values Address, User Name, and Password
+take note of the values Address, User Name, and Password
 
 as we are using ARM32 images, the easier way to build this images is in a ARM32 device (in our jetson)
 
-```bash
-# Should be run from the folder `tutorial-containers-02`
-# You can get the login URI and credentials from: Portal -> ACR -> Access keys
-REGISTRY_USERNAME=tutorialcontainers
-REGISTRY_PASSWORD=<secret>
-REGISTRY_ADDRESS=tutorialcontainers.azurecr.io
+change REGISTRY_USERNAME, REGISTRY_PASSWORD, and REGISTRY_ADDRESS to the values of your registry
 
-docker login ${REGISTRY_ADDRESS} --username $REGISTRY_USERNAME --password $REGISTRY_PASSWORD
+The edge device will pull new images from the registry only when there is in the registry an image with higher version than the device have locally. Therefore, if you want to build different versions of your images, you need to change the IMAGE_VERSION variable (in the script) to indicate which should be downloaded be the edge device.
 
-# Build, tag, push
-# TODO: manually manage versions
-IMAGE_NAME=led
-DOCKERFILE_PATH=./container-led
-docker build -t ${IMAGE_NAME} -f ${DOCKERFILE_PATH}/Dockerfile ${DOCKERFILE_PATH}
-docker tag ${IMAGE_NAME} ${REGISTRY_ADDRESS}/${IMAGE_NAME}
-docker push ${REGISTRY_ADDRESS}/${IMAGE_NAME}
-
-IMAGE_NAME=button
-DOCKERFILE_PATH=./container-button
-docker build -t ${IMAGE_NAME} -f ${DOCKERFILE_PATH}/Dockerfile ${DOCKERFILE_PATH}
-docker tag ${IMAGE_NAME} ${REGISTRY_ADDRESS}/${IMAGE_NAME}
-docker push ${REGISTRY_ADDRESS}/${IMAGE_NAME}
-```
+<build_push.sh>
 
 
 
@@ -59,43 +42,9 @@ Go back to "IoT Edge", select your device, copy the priamry connection string to
 
 also, we have to install iot edge on the device and configure it so it can connect with IoT Hub on the cloud
 
-```bash
-# Change the value of this variable
-connection_string="<enter-the-value>"
+<device_configuration.sh>
 
-########################################
-# Paste all commands bellow, one by one
-# Please check the outputs for errors
-# If your password is requested, please enter it (you won’t see the letters filling in the screen)
-sudo apt-get update -y && sudo apt install -y curl nano
 
-curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > ./microsoft-prod.list
-
-sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
-
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-
-sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
-
-sudo apt-get update -y && sudo apt-get install -y aziot-edge
-
-sudo echo -e "[provisioning]\nsource = \"manual\"\nconnection_string = \"${connection_string}\"" | sudo tee /etc/aziot/config.toml
-
-sudo cat /etc/aziot/config.toml
-# Expected ouput: file saved with proper content
-
-sudo iotedge config apply
-# Expected output: services with status "Started!" and "Done" in the end
-
-# sudo systemctl restart iotedge
-sudo chmod -R 777 /var/run/iotedge/
-sudo iotedge system logs
-sudo iotedge check
-# Expected output: you will see a docker-related error before we setup the modules, and you may see some warning; That's ok
-
-sudo iotedge list
-# Expected output: will list 2 modules from Azure IoT + our modules
-```
 
 you may have to wait a few minutes to everything be configured, but soon you'll see on the portal your device with the status "417 -- The device's deployment configuration is not set"
 
@@ -104,46 +53,58 @@ you may have to wait a few minutes to everything be configured, but soon you'll 
 click Set Modules -> Add ->     IoT Edge module
 
 
-name "button", image URI "tutorialcontainers.azurecr.io/button:latest"
-create options for led:
-```
-{
-"HostConfig": {
-    "Privileged": true,
-    "PortBindings": {
-    "80/tcp": [
-        {
-        "HostPort": "80"
-        }
-    ]
-    },
-    "Devices": [
-    {
-        "PathOnHost": "/dev/i2c-1",
-        "PathInContainer": "/dev/i2c-1",
-        "CgroupPermissions": "mrw"
-    }
-    ]
-}
-}
-```
-
-
 for button:
+name "button-acr", image URI "tutorialcontainers.azurecr.io/button-acr:1.0"
+Container Create Options:
 ```
 {
-"HostConfig": {
-    "Privileged": true,
-    "Devices": [
-    {
-        "PathOnHost": "/dev/i2c-1",
-        "PathInContainer": "/dev/i2c-1",
-        "CgroupPermissions": "mrw"
+    "HostConfig": {
+        "Privileged": true,
+            "Devices": [
+            {
+                "PathOnHost": "/dev/i2c-1",
+                "PathInContainer": "/dev/i2c-1",
+                "CgroupPermissions": "mrw"
+            }
+        ]
     }
-    ]
 }
-}
-
 ```
+
+for led:
+name "led-acr", image URI "tutorialcontainers.azurecr.io/led-acr:1.0"
+Container Create Options:
+```
+{
+    "HostConfig": {
+        "Privileged": true,
+        "PortBindings": {
+            "80/tcp": [
+                {
+                "HostPort": "80"
+                }
+            ]
+        },
+        "Devices": [
+            {
+                "PathOnHost": "/dev/i2c-1",
+                "PathInContainer": "/dev/i2c-1",
+                "CgroupPermissions": "mrw"
+            }
+        ]
+    }
+}
+```
+review and create -> create
+
 
 May take a few minutes download and run the images. Just grap a coffe and wait :) 
+
+
+
+Now you have all containers running correctly.
+What is the difference?
+* you can see the logs in the Portal
+* you can change the modules in the cloud, without having to login into the device
+
+We didn't made any change in the code itself of the containers, but now we have access to Azure Iot Edge funcionallities, like communication between modules and between devices using azure's messaging mecanism.
