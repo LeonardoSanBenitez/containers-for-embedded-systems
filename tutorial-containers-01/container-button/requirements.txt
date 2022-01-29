@@ -1,2 +1,2 @@
-requests==2.25.1
 sparkfun-qwiic-button==2.0.1
+requests
