@@ -1,0 +1,156 @@
+{
+  "$schema-template": "2.0.0",
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": ""
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.1",
+              "createOptions": {
+                "HostConfig": {
+                  "LogConfig": {
+                    "Type": "json-file",
+                    "Config": {
+                      "max-size": "10m",
+                      "max-file": "3"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.1",
+              "createOptions": {
+                "ExposedPorts": {
+                  "9600/tcp": {}
+                },
+                "HostConfig": {
+                  "PortBindings": {
+                    "5671/tcp": [
+                      {
+                        "HostPort": "5671"
+                      }
+                    ],
+                    "8883/tcp": [
+                      {
+                        "HostPort": "8883"
+                      }
+                    ],
+                    "443/tcp": [
+                      {
+                        "HostPort": "443"
+                      }
+                    ],
+                    "9600/tcp": [
+                      {
+                        "HostPort": "9602"
+                      }
+                    ]
+                  },
+                  "LogConfig": {
+                    "Type": "json-file",
+                    "Config": {
+                      "max-size": "10m",
+                      "max-file": "3"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "modules": {
+          "led": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "tutorialcontainers.azurecr.io/led:latest",
+              "createOptions": {
+                "HostConfig": {
+                  "Privileged": true,
+                  "PortBindings": {
+                    "80/tcp": [
+                      {
+                        "HostPort": "80"
+                      }
+                    ]
+                  },
+                  "Devices": [
+                    {
+                      "PathOnHost": "/dev/i2c-1",
+                      "PathInContainer": "/dev/i2c-1",
+                      "CgroupPermissions": "mrw"
+                    }
+                  ],
+                  "LogConfig": {
+                    "Type": "json-file",
+                    "Config": {
+                      "max-size": "10m",
+                      "max-file": "3"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "button": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "tutorialcontainers.azurecr.io/button:latest",
+              "createOptions": {
+                "HostConfig": {
+                  "Privileged": true,
+                  "Devices": [
+                    {
+                      "PathOnHost": "/dev/i2c-1",
+                      "PathInContainer": "/dev/i2c-1",
+                      "CgroupPermissions": "mrw"
+                    }
+                  ],
+                  "LogConfig": {
+                    "Type": "json-file",
+                    "Config": {
+                      "max-size": "10m",
+                      "max-file": "3"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "routes": {
+          "ledToIoTHub": "FROM /messages/modules/led/outputs/* INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    }
+  }
+}
