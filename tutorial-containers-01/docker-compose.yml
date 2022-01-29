@@ -9,6 +9,7 @@ services:
        - ./:/scr
     ports:
        - "80:80"
+    restart: "always"
     privileged: true
     devices:
       - "/dev/i2c-1:/dev/i2c-1"
@@ -20,6 +21,7 @@ services:
       dockerfile: Dockerfile
     volumes:
        - ./:/scr
+    restart: "always"
     privileged: true
     devices:
       - "/dev/i2c-1:/dev/i2c-1"

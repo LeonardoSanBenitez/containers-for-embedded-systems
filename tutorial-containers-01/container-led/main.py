@@ -15,4 +15,5 @@ async def root(state: bool) -> None:
 async def server_startup():
     app.state.my_button = qwiic_button.QwiicButton()
 
-uvicorn.run('main:app', host="0.0.0.0", port=80, reload=True, debug=True)
+if __name__ == "__main__":
+    uvicorn.run('main:app', host="0.0.0.0", port=80, reload=True, debug=True)
