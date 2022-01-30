@@ -174,3 +174,32 @@ docker push ${REGISTRY_ADDRESS}/${IMAGE_NAME}
 ```
 
 # Module deployment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+execute `./.pipeline/templates/steps/deploy.yml` with the parameters:
+  deploymentFile: deployment.template.nano.json
+  device: nano
+  platform: arm64v8
+
+
+az iot edge deployment create \
+--deployment-id tutorial-containers-deployment \
+--hub-name tutorialcontainers \
+--content ./deployment.json \
+--target-condition "tags.stage='dev'" \
+--priority 0 
+
+az iot edge deployment create --deployment-id [deployment id] --hub-name [hub name] --content [file path] --labels "[labels]" --target-condition "[target query]" --priority [int]

@@ -8,7 +8,6 @@ portal -> iot hub -> create -> ...
 # Container build
 our containers won't build themselves when deploying, we need to build them beforehand and store their images somewhere. I'll store in Azure Container Registry (could be Docker Registry, AWS ECR, etc)
 
-
 TODO: instructions to create ACR on portal
 take note of the values Address, User Name, and Password
 
