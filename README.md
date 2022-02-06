@@ -1,1 +1,1 @@
-public material for the project [CLASSIFIED] developed with the company [CLASSIFIED]
+Educational material about the usage of containers in embedded systems

@@ -2,6 +2,8 @@ managing deployments with Azure Iot Edge
 
 the only change in the code was that I changed the container name from "led" to "led-acr" (to avoid conflicts if you have done the first part of this tutorial).
 
+# What is an IoT Platform
+
 # Infra setup
 portal -> iot hub -> create -> ...
 
