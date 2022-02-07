@@ -7,6 +7,11 @@ we have to store the terraform state file somewhere, and I choose azure blob sto
 
 # What is infra as code
 
+Transform manual proceadures into executable code
+
+
+
+
 # Infrastructure provisioning
 
 ```bash
@@ -31,7 +36,7 @@ terraform apply
 
 
 
-the device enrollment is still the same process as in the part 2 of this tutorial, please take a look there. We won't cover the enrollment automation, like using Device Provisioning Service from Azure.
+the device enrollment is still the same process as in the part 2 of this tutorial, please take a look there. We won't cover the enrollment automation, like using Device Provisioning Service (DPS) from Azure.
 
 
 # Deployment template

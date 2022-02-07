@@ -17,6 +17,9 @@ Dedicated processing system within a larger mechanical or electricalsystem
 ABS controller, smart frige processor, aviation autopilot
 
 # What are containers
+
+method for packaging, distributing, and running applications
+
 technology to isolate processes of the operating system
 
 dedicated namespace, memory, and networking views, insulating it from the rest of the system

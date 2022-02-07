@@ -36,33 +36,6 @@ resource "azurerm_iothub" "main" {
   }
 }
 
-resource "azurerm_iothub_shared_access_policy" "main" {
-  name                = var.name_simple
-  resource_group_name = azurerm_resource_group.main.name
-  iothub_name         = azurerm_iothub.main.name
-
-  registry_read  = true
-  registry_write = true
-}
-
-resource "azurerm_iothub_dps" "main" {
-    name                = var.name_simple
-    resource_group_name = azurerm_resource_group.main.name
-    location            = azurerm_resource_group.main.location
-
-    sku {
-        name     = "S1"
-        capacity = 1
-    }
-
-    linked_hub {
-        connection_string = azurerm_iothub_shared_access_policy.main.primary_connection_string
-        location = azurerm_iothub.main.location
-    }
-}
-
-
-
 
 resource "azurerm_container_registry" "main" {
     name                = var.name_simple
