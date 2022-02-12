@@ -2,6 +2,7 @@ parameters:
   - name: moduleName
   - name: latestVersion
   - name: modulesPath
+  - name: pipelinePath
   - name: registryAddress
 
 steps:
@@ -102,11 +103,11 @@ steps:
     displayName: ${{ parameters.moduleName }} version to JSON
     inputs:
       targetType: filePath
-      filePath: .pipeline/scripts/variables-to-json.ps1
+      filePath: ${{ parameters.pipelinePath }}/scripts/variables-to-json.ps1
       arguments: "'${{ parameters.moduleName }}_latest=$(version)'"
   - task: PowerShell@2
     displayName: Write to Library
     inputs:
       targetType: filePath
-      filePath: .pipeline/scripts/variables-to-library.ps1
+      filePath: ${{ parameters.pipelinePath }}/scripts/variables-to-library.ps1
       arguments: "$(System.AccessToken) 'Latest Image Versions' $(bundleVariables.bundledJson)"
