@@ -43,6 +43,7 @@ stages:
               moduleName: "led"
               latestVersion: $(led_latest)
               modulesPath: tutorial-containers-03/modules
+              registryAddress: tutorialcontainers.azurecr.io
       - job: build_button
         displayName: Build button module
         condition: |
@@ -57,3 +58,4 @@ stages:
               moduleName: "button"
               latestVersion: $(button_latest)
               modulesPath: tutorial-containers-03/modules
+              registryAddress: tutorialcontainers.azurecr.io
