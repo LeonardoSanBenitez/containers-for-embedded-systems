@@ -1,19 +1,23 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ubuntu-18.04
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  - group: "Latest Image Versions"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+  #! Pre-build preparations
+  - stage: Prebuild
+    jobs:
+      - job: envprep
+        displayName: Preparation Steps
+        steps:
+          - template: ./.pipeline/templates/steps/pre-build.yml
+            parameters:
+              module: button
+              latestVersion: $(button_latest)
+            parameters:
+              module: led
+              latestVersion: $(led_latest)
