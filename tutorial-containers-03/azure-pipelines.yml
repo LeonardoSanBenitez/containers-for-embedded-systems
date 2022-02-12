@@ -18,9 +18,42 @@ stages:
             parameters:
               module: button
               latestVersion: $(button_latest)
-              modulesPath: ./tutorial-containers-03/modules
+              modulesPath: tutorial-containers-03/modules
           - template: ./.pipeline/templates/steps/pre-build.yml
             parameters:
               module: led
               latestVersion: $(led_latest)
-              modulesPath: ./tutorial-containers-03/modules
+              modulesPath: tutorial-containers-03/modules
+
+  #! Build stage
+  - stage: Build
+    dependsOn: Prebuild
+    jobs:
+      - job: build_led
+        displayName: Build led module
+        condition: |
+          eq
+          (
+            stageDependencies.Prebuild.envprep.outputs['led.doBuild'],
+            'true'
+          )
+        steps:
+          - template: ./.pipeline/templates/steps/build.yml
+            parameters:
+              moduleName: "led"
+              latestVersion: $(led_latest)
+              modulesPath: tutorial-containers-03/modules
+      - job: build_button
+        displayName: Build button module
+        condition: |
+          eq
+          (
+            stageDependencies.Prebuild.envprep.outputs['button.doBuild'],
+            'true'
+          )
+        steps:
+          - template: ./.pipeline/templates/steps/build.yml
+            parameters:
+              moduleName: "button"
+              latestVersion: $(button_latest)
+              modulesPath: tutorial-containers-03/modules

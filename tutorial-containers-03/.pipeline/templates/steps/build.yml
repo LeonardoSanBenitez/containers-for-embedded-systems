@@ -1,6 +1,7 @@
 parameters:
   - name: moduleName
   - name: latestVersion
+  - name: modulesPath
 
 steps:
   - task: PowerShell@2
@@ -9,18 +10,9 @@ steps:
     inputs:
       targetType: "inline"
       script: |
-        $package = Get-Content "modules/${{ parameters.moduleName }}/module.json" | out-string | ConvertFrom-Json
+        $package = Get-Content "${{ parameters.modulesPath }}/${{ parameters.moduleName }}/module.json" | out-string | ConvertFrom-Json
         $version = $($package.image.tag.version)
         Write-Host "##vso[task.setvariable variable=version]$version"
-
-  - task: FileTransform@1
-    displayName: "Change the version in package.json"
-    condition: |
-      eq('${{ parameters.moduleName }}', 'diarpicam')
-    inputs:
-      folderPath: "modules/diarpicam"
-      fileType: "json"
-      targetFiles: "package.json"
 
   - task: PowerShell@2
     inputs:
@@ -49,10 +41,10 @@ steps:
       targetType: "inline"
       script: |
         docker buildx build --platform linux/arm/v7 `
-          -f "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}/Dockerfile.arm32v7" `
+          -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.arm32v7" `
           -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
           --push `
-          "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}"
+          "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
 
   - task: Powershell@2
     name: buildarm64
@@ -61,10 +53,22 @@ steps:
       targetType: "inline"
       script: |
         docker buildx build --platform linux/arm64 `
-          -f "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}/Dockerfile.arm64v8" `
+          -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.arm64v8" `
           -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8" `
           --push `
-          "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}"
+          "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
+
+  - task: Powershell@2
+    name: buildamd64
+    displayName: "amd64: Build ${{ parameters.moduleName }}"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker build `
+          -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.amd64" `
+          -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-amd64" `
+          --push `
+          "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
 
   - task: Powershell@2
     name: create_manifest
