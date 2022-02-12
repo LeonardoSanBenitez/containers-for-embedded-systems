@@ -21,7 +21,7 @@ steps:
     inputs:
       targetType: "inline"
       script: |
-        $package = Get-Content "${{ parameter.modulesPath }}/${{ parameters.module }}/module.json" | out-string | ConvertFrom-Json
+        $package = Get-Content "${{ parameters.modulesPath }}/${{ parameters.module }}/module.json" | out-string | ConvertFrom-Json
         $version = $($package.image.tag.version)
         $latest = "${{ parameters.latestVersion }}"
         $doBuild = $($version -ne $latest)
