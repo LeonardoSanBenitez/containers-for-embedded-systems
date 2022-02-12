@@ -27,11 +27,11 @@ Sounds like a Virtual Machine, right? Yes, but one big difference is that contai
 
 Some important concepts: a *container* is a running instance of this isolated environment, being managed by a *container engine*. A container is started having as a base an *image*, a binary file with everything bundled together. An image can be *built* from a *definition file*, a text description of what goes inside the container.
 
-But "container" is just an abstract concept, and there are many softwares that implements it. The most well-known container engine is called **docker**, and from now on I'll use both terms as synonyms.
+But "container" is just an abstract concept, and there are many softwares that implements it. The most well-known container engine is called **docker**, and from now on we'll use both terms as synonyms.
 
 ## Why use containers
 
-There are many advantages in using containers for any application, but I want to highlight things that are especially relevant in the context of embedded systems:
+There are many advantages in using containers for any application, but we want to highlight things that are especially relevant in the context of embedded systems:
 
 * **Simplify software development**: different developers can work in the same system with less interference between them. Each container can have different dependencies installed, have different toolchains, be built independently, etc.
 * **Simplify testing**: each container is an isolated system, so you spend less time worrying about the configurations of your test setup. For the same reason, you can easily test the system in several different underlying configurations, something that in a non-container environment would probably require using several different devices.
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
 The first sends one HTTP request per second (`requests.post...`) and the second is a FastAPI webserver that is first initiated (`uvicorn.run...`) and then listens to HTTP POST requests (`@app.post("/{state}")...`) to turn the led on or off (`my_button.LED_on...`).
 
-I’m using an extension of docker called *docker-compose* to handle the two containers together, to *orchestrate* them. Once you have docker and docker-compose installed **in the device** (following [this instruction](https://github.com/LeonardoSanBenitez/containers-for-embedded-systems/blob/main/init_os.sh)), you can execute the command `docker-compose up` in the folder “tutorial-containers-01” to build and start running both containers.
+We are using an extension of docker called *docker-compose* to handle the two containers together, to *orchestrate* them. Once you have docker and docker-compose installed **in the device** (following [this instruction](https://github.com/LeonardoSanBenitez/containers-for-embedded-systems/blob/main/init_os.sh)), you can execute the command `docker-compose up` in the folder “tutorial-containers-01” to build and start running both containers.
 
 Congratulations, you now have two containers working together in your embedded device :) 
 
