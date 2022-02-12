@@ -55,8 +55,15 @@ steps:
       script: |
         docker buildx build --platform linux/arm64 `
           -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.arm64v8" `
-          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm64v8" `
-          --push `
+          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm64v8"
+
+  - task: Powershell@2
+    name: pusharm64
+    displayName: "arm64v8: Push ${{ parameters.moduleName }}"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker --push `
           "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
 
   - task: Powershell@2
