@@ -2,6 +2,7 @@ parameters:
   - name: moduleName
   - name: latestVersion
   - name: modulesPath
+  - name: registryAddress
 
 steps:
   - task: PowerShell@2
@@ -42,7 +43,7 @@ steps:
       script: |
         docker buildx build --platform linux/arm/v7 `
           -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.arm32v7" `
-          -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
+          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm32v7" `
           --push `
           "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
 
@@ -54,7 +55,7 @@ steps:
       script: |
         docker buildx build --platform linux/arm64 `
           -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.arm64v8" `
-          -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8" `
+          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm64v8" `
           --push `
           "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
 
@@ -66,7 +67,7 @@ steps:
       script: |
         docker build `
           -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.amd64" `
-          -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-amd64" `
+          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-amd64" `
           --push `
           "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
 
@@ -77,13 +78,13 @@ steps:
       targetType: "inline"
       script: |
         docker manifest create `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:latest" `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8"
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:latest" `
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm32v7" `
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm64v8"
         docker manifest create `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)" `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8"
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)" `
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm32v7" `
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-arm64v8"
 
   - task: Powershell@2
     name: push_manifest
@@ -93,7 +94,7 @@ steps:
       script: |
         docker manifest push `
           --purge `
-          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:latest"
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:latest"
 
   - task: PowerShell@2
     name: bundleVariables
