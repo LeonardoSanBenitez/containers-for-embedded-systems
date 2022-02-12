@@ -1,0 +1,33 @@
+parameters:
+  - name: module
+  - name: latestVersion
+
+steps:
+  #! Do not delete. When MIcrosoft screws up the hosted agent, this will be useful.
+  #? from here
+  # - task: Bash@3
+  #   displayName: "Upgrade az tools and azure-iot extension"
+  #   inputs:
+  #     targetType: "inline"
+  #     script: |
+  #       az upgrade --yes
+  #       az extension add --name azure-iot
+  #? to here
+
+  - task: PowerShell@2
+    displayName: "should ${{ parameters.module }} be built"
+    name: ${{ parameters.module }}
+    inputs:
+      targetType: "inline"
+      script: |
+        $package = Get-Content "modules/${{ parameters.module }}/module.json" | out-string | ConvertFrom-Json
+        $version = $($package.image.tag.version)
+        $latest = "${{ parameters.latestVersion }}"
+        $doBuild = $($version -ne $latest)
+        Write-Host "##vso[task.setvariable variable=doBuild;isOutput=true]$doBuild"
+        if($doBuild) {
+          Write-Output "${{ parameters.module }} will be built with new version $($version)"
+        }
+        else {
+          Write-Output "Module version not changed - will not build"
+        }

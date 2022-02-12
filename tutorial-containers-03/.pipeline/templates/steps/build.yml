@@ -1,0 +1,106 @@
+parameters:
+  - name: moduleName
+  - name: latestVersion
+
+steps:
+  - task: PowerShell@2
+    displayName: "get new version"
+    name: ${{ parameters.moduleName }}
+    inputs:
+      targetType: "inline"
+      script: |
+        $package = Get-Content "modules/${{ parameters.moduleName }}/module.json" | out-string | ConvertFrom-Json
+        $version = $($package.image.tag.version)
+        Write-Host "##vso[task.setvariable variable=version]$version"
+
+  - task: FileTransform@1
+    displayName: "Change the version in package.json"
+    condition: |
+      eq('${{ parameters.moduleName }}', 'diarpicam')
+    inputs:
+      folderPath: "modules/diarpicam"
+      fileType: "json"
+      targetFiles: "package.json"
+
+  - task: PowerShell@2
+    inputs:
+      targetType: "inline"
+      script: "Write-Output ${{ parameters.moduleName }} $(version) ${{ parameters.latestVersion }}"
+
+  - task: Docker@2
+    displayName: "ACR Login"
+    inputs:
+      containerRegistry: "acr connection"
+      command: "login"
+
+  - task: Powershell@2
+    name: multiarch
+    displayName: "Prepare multiarch build"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker run --privileged --rm tonistiigi/binfmt --install arm64,arm
+        docker buildx create --use
+
+  - task: Powershell@2
+    name: buildarm32
+    displayName: "arm32v7: Build ${{ parameters.moduleName }}"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker buildx build --platform linux/arm/v7 `
+          -f "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}/Dockerfile.arm32v7" `
+          -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
+          --push `
+          "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}"
+
+  - task: Powershell@2
+    name: buildarm64
+    displayName: "arm64v8: Build ${{ parameters.moduleName }}"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker buildx build --platform linux/arm64 `
+          -f "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}/Dockerfile.arm64v8" `
+          -t "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8" `
+          --push `
+          "$(System.DefaultWorkingDirectory)/modules/${{ parameters.moduleName }}"
+
+  - task: Powershell@2
+    name: create_manifest
+    displayName: "Create image latest manifest"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker manifest create `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:latest" `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8"
+        docker manifest create `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)" `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm32v7" `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:$(version)-arm64v8"
+
+  - task: Powershell@2
+    name: push_manifest
+    displayName: "Push image latest manifest"
+    inputs:
+      targetType: "inline"
+      script: |
+        docker manifest push `
+          --purge `
+          "kwsdiaacr.azurecr.io/${{ parameters.moduleName }}:latest"
+
+  - task: PowerShell@2
+    name: bundleVariables
+    displayName: ${{ parameters.moduleName }} version to JSON
+    inputs:
+      targetType: filePath
+      filePath: .pipeline/scripts/variables-to-json.ps1
+      arguments: "'${{ parameters.moduleName }}_latest=$(version)'"
+  - task: PowerShell@2
+    displayName: Write to Library
+    inputs:
+      targetType: filePath
+      filePath: .pipeline/scripts/variables-to-library.ps1
+      arguments: "$(System.AccessToken) 'Latest Image Versions' $(bundleVariables.bundledJson)"
