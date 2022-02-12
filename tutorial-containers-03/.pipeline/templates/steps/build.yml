@@ -67,15 +67,9 @@ steps:
       script: |
         docker build `
           -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.amd64" `
-          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-amd64"
-
-  - task: Powershell@2
-    name: pushamd64
-    displayName: "amd64: Push ${{ parameters.moduleName }}"
-    inputs:
-      targetType: "inline"
-      script: |
-        docker push `
+          -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-amd64" `
+          "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}" `
+        && docker push `
           "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-amd64"
 
   - task: Powershell@2
