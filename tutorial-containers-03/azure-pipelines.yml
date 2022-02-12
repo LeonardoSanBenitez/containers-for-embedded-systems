@@ -14,11 +14,13 @@ stages:
       - job: envprep
         displayName: Preparation Steps
         steps:
-          - template: ./.pipeline/templates/steps/pre-build.yml
+          - template: ./tutorial-containers-03/.pipeline/templates/steps/pre-build.yml
             parameters:
               module: button
               latestVersion: $(button_latest)
-          - template: ./.pipeline/templates/steps/pre-build.yml
+              modulesPath: ./tutorial-containers-03/modules
+          - template: ./tutorial-containers-03/.pipeline/templates/steps/pre-build.yml
             parameters:
               module: led
               latestVersion: $(led_latest)
+              modulesPath: ./tutorial-containers-03/modules

@@ -1,6 +1,7 @@
 parameters:
   - name: module
   - name: latestVersion
+  - name: modulesPath
 
 steps:
   #! Do not delete. When MIcrosoft screws up the hosted agent, this will be useful.
@@ -20,7 +21,7 @@ steps:
     inputs:
       targetType: "inline"
       script: |
-        $package = Get-Content "modules/${{ parameters.module }}/module.json" | out-string | ConvertFrom-Json
+        $package = Get-Content "${{ parameter.modulesPath }}/${{ parameters.module }}/module.json" | out-string | ConvertFrom-Json
         $version = $($package.image.tag.version)
         $latest = "${{ parameters.latestVersion }}"
         $doBuild = $($version -ne $latest)
