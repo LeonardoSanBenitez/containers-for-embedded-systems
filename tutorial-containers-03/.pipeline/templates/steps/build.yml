@@ -68,8 +68,8 @@ steps:
         docker build `
           -f "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}/Dockerfile.amd64" `
           -t "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-amd64" `
-          --push `
-          "$(System.DefaultWorkingDirectory)/${{ parameters.modulesPath }}/${{ parameters.moduleName }}"
+        && docker push `
+          "${{ parameters.registryAddress }}/${{ parameters.moduleName }}:$(version)-amd64"
 
   - task: Powershell@2
     name: create_manifest
