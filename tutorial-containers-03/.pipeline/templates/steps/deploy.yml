@@ -21,7 +21,7 @@ steps:
       action: "Deploy to IoT Edge devices"
       deploymentFilePath: "$(System.DefaultWorkingDirectory)/config/${{ parameters.device }}.${{ parameters.platform }}.json"
       azureSubscription: "${{ parameters.azureSubscription }}"
-      iothubname: "${{ iothubname }}"
+      iothubname: "${{ parameters.iothubname }}"
       deploymentid: "${{ parameters.device }}-$(System.TeamProject)-devops"
       priority: "0"
       deviceOption: "Multiple Devices"
