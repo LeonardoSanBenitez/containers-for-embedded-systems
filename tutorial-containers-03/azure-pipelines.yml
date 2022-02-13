@@ -79,9 +79,12 @@ stages:
               deploymentFile: ./deployment.template.json
               device: nano
               platform: arm64v8
+              azureSubscription: "Visual Studio Enterprise Subscription – MPN(/subscriptions/1ed39caf-70a4-44b7-86e7-dddbf04de6f6)"
+              iothubname: "kws-dia-iot"
         steps:
           - template: ./.pipeline/templates/steps/deploy.yml
             parameters:
               deploymentFile: $(deploymentFile)
               device: $(device)
               platform: $(platform)
+              azureSubscription: $(azureSubscription)

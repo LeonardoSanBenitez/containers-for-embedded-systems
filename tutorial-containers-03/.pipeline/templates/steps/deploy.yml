@@ -1,10 +1,9 @@
 parameters:
   - name: deploymentFile
-    default: deployment.template.json
   - name: device
-    default: rpi
   - name: platform
-    default: arm32v7
+  - name: azureSubscription
+  - name: iothubname
 
 steps:
   - task: AzureIoTEdge@2
@@ -21,8 +20,8 @@ steps:
     inputs:
       action: "Deploy to IoT Edge devices"
       deploymentFilePath: "$(System.DefaultWorkingDirectory)/config/${{ parameters.device }}.${{ parameters.platform }}.json"
-      azureSubscription: "manageddev-kwsdia-weeddetection-01(249f348b-5a7a-4024-883d-0a4902dd9af7)"
-      iothubname: "kws-dia-iot"
+      azureSubscription: "${{ parameters.azureSubscription }}"
+      iothubname: "${{ iothubname }}"
       deploymentid: "${{ parameters.device }}-$(System.TeamProject)-devops"
       priority: "0"
       deviceOption: "Multiple Devices"
