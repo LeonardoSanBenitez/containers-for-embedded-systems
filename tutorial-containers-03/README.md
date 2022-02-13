@@ -52,3 +52,52 @@ applying the deployment template
 we'll use Azure Pipelines, that is part of the set of solutios called Azure Devops
 
 TODO: how to create the azure devops environment; Ane, can you do this?
+
+
+creation:
+1. pipelines
+1. new pipeline
+1. where is your code: github
+1. select the repository
+1. You'll be redirected to github to approve the connection
+
+
+
+## Pre build
+module.json
+this format is an informal standard of Azure IoT, but as we seen in the previous tutorial, you don't need to follow it.
+we'll use the module's version to decide wether the containers should be build or not, so that we don't build the every container every time
+
+but the pipeline has to "remember" if it has already build a container before, right? We'll use Pipeline Library to that
+
+1. pipelines
+2. library
+3. create variable group
+4. give it the name "Latest Image Versions"
+5. Add two variables, "button_latest" and "led_latest", both with the value 1.0.0
+6. Pipeline permissions
+7. Select our pipeline
+8. Give permissions to the pipeline to write the variables
+  a. security
+  b. give Administrator permission to the user "<project name> Build Service"
+
+
+## Build
+
+Setup connection with the container registry
+1. settings
+1. Service connections
+1. New Service Connection
+1. select Docker Registry
+1. selec Azure Container Registry
+1. select the subscription in which you created the registry, and then the registry itself
+1. give it the name "acr connection"
+1. Enable the option "grant access permission to all pipelines"
+
+
+
+for this tutorial this was not required, but we decided to also build the images for several architectures
+since we are just using a Jetson Nano, the only image that will really run is the arm64 one. If you are using a raspberry pi you can use the arm32 one, or even use the amd64 to test/debug the containers in your personal computer.
+
+
+if you run the pipeline now (by commiting and pushing to the repository), you'll see that all containers are build. If you access the container registry, you'll see that the newly build images are already there

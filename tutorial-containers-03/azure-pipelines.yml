@@ -61,3 +61,27 @@ stages:
               modulesPath: tutorial-containers-03/modules
               pipelinePath: tutorial-containers-03/.pipeline
               registryAddress: tutorialcontainers.azurecr.io
+
+  #! Deploy to devices
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+      - job: deployment
+        displayName: Create Deployment for Device
+        strategy:
+          maxParallel: 2
+          matrix:
+            #! raspberry_pi:
+            #!   deploymentFile: deployment.template.json
+            #!   device: rpi
+            #!   platform: arm32v7
+            jetson_nano:
+              deploymentFile: ./deployment.template.json
+              device: nano
+              platform: arm64v8
+        steps:
+          - template: ./.pipeline/templates/steps/deploy.yml
+            parameters:
+              deploymentFile: $(deploymentFile)
+              device: $(device)
+              platform: $(platform)

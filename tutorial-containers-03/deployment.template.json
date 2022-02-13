@@ -8,7 +8,14 @@
           "type": "docker",
           "settings": {
             "minDockerVersion": "v1.25",
-            "loggingOptions": ""
+            "loggingOptions": "",
+            "registryCredentials": {
+              "kwsdiaacr": {
+                "username": "tutorialcontainers",
+                "password": "T9HbanI/l60pNmSLRc0iKmqod5mBCpRn",
+                "address": "tutorialcontainers.azurecr.io"
+              }
+            }
           }
         },
         "systemModules": {
@@ -81,7 +88,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "tutorialcontainers.azurecr.io/led:latest",
+              "image": "tutorialcontainers.azurecr.io/led:1.0.1-arm64v8",
               "createOptions": {
                 "HostConfig": {
                   "Privileged": true,
@@ -116,7 +123,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "tutorialcontainers.azurecr.io/button:latest",
+              "image": "tutorialcontainers.azurecr.io/button:1.0.1-arm64v8",
               "createOptions": {
                 "HostConfig": {
                   "Privileged": true,
