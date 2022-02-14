@@ -101,3 +101,7 @@ since we are just using a Jetson Nano, the only image that will really run is th
 
 
 if you run the pipeline now (by commiting and pushing to the repository), you'll see that all containers are build. If you access the container registry, you'll see that the newly build images are already there
+
+# References
+
+https://docs.microsoft.com/en-us/azure/iot-edge/how-to-continuous-integration-continuous-deployment?view=iotedge-2020-11

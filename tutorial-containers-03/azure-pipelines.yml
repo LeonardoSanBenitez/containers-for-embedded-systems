@@ -79,7 +79,7 @@ stages:
               deploymentFile: ./deployment.template.json
               device: nano
               platform: arm64v8
-              azureSubscription: "Visual Studio Enterprise Subscription – MPN(98df2f1d-46d9-4009-849f-6d975be43838)"
+              azureSubscription: "subscription-connection"
               iothubname: "tutorial-containers-part-3"
         steps:
           - template: ./.pipeline/templates/steps/deploy.yml
