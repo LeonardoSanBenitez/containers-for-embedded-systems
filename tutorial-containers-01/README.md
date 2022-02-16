@@ -7,7 +7,9 @@ In this series of posts we'll explore **why and how** to use containers in embed
 * For you that still don't use containers, to give you a head start in conceptual understanding and code to be reused in your work;
 * For you that already use containers, to discuss best practices and tools to ease your work.
 
-In this first post, we'll see the fundamentals of containers and present our "hello world" demo that we'll use throughout the series. Fasten your belt, grab a coffee, and let’s start!
+In this first post, we'll see the fundamentals of containers and present our "hello world" demo that we'll use throughout the series. But before we start, a huge thanks to the co-authors [Dan Danciu](https://www.linkedin.com/in/dan-danciu/) and [Ane Berasategi](https://www.linkedin.com/in/anebz/) :)
+
+Fasten your belt, grab a coffee, and let’s start!
 
 ## What are embedded systems
 
@@ -116,7 +118,7 @@ We are using an extension of docker called *docker-compose* to handle the two co
 
 Congratulations, you now have two containers working together in your embedded device :) 
 
-![Friends Excited GIF - Friends Excited Happy - Discover &amp; Share GIFs](Images - README/friends-excited.gif)
+![gif_excited](images/friends-excited.gif)
 
 ## Conclusion and next steps
 

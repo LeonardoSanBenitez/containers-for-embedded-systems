@@ -1,4 +1,7 @@
+# Streamline IoT projects with Infrastructure as Code
+
 on the dev machine, install:
+
 * azure cli
 * terraform
 
@@ -43,6 +46,10 @@ the device enrollment is still the same process as in the part 2 of this tutoria
 
 describe the what modules should be deployed, in a similar way as docker-compose that we used in the first tutorial 
 
+
+
+
+
 # CI/CD pipeline
 
 building the containers
@@ -78,8 +85,8 @@ but the pipeline has to "remember" if it has already build a container before, r
 6. Pipeline permissions
 7. Select our pipeline
 8. Give permissions to the pipeline to write the variables
-  a. security
-  b. give Administrator permission to the user "<project name> Build Service"
+    a. security
+    b. give Administrator permission to the user "<project name> Build Service"
 
 
 ## Build
@@ -105,3 +112,5 @@ if you run the pipeline now (by commiting and pushing to the repository), you'll
 # References
 
 https://docs.microsoft.com/en-us/azure/iot-edge/how-to-continuous-integration-continuous-deployment?view=iotedge-2020-11
+
+IoT Edge CI/CD Deep Dive Resources: https://github.com/VSChina/azure-iot-edge-humidity-filter-module-sample

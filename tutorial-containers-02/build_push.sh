@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Should be run from the folder `tutorial-containers-02`
 # You can get the login URI and credentials from: Portal -> ACR -> Access keys
 REGISTRY_USERNAME=tutorialcontainers

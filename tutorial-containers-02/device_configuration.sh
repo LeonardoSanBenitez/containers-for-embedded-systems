@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Change the value of this variable
 connection_string="<enter-the-value>"
 
