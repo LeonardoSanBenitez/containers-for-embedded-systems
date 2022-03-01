@@ -72,11 +72,11 @@ stages:
           maxParallel: 2
           matrix:
             #! raspberry_pi:
-            #!   deploymentFile: deployment.template.json
+            #!   deploymentFile: tutorial-containers-03/deployment.template.json
             #!   device: rpi
             #!   platform: arm32v7
             jetson_nano:
-              deploymentFile: ./deployment.template.json
+              deploymentFile: tutorial-containers-03/deployment.template.json
               device: nano
               platform: arm64v8
               azureSubscription: "subscription-connection"
