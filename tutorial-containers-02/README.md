@@ -2,7 +2,7 @@
 
 This post is the second of a series about using containers for embedded systems, where in the [first post]() we have explored the fundamentals of containers. Now we’ll focus on using an IoT Platform (specifically, **Azure IoT Hub**) to ease the management of large embedded applications.
 
-We’ll keep using our little practical demo with a Jetson Nano (but you can reproduce the tutorial in any Linux device) and we’ll demonstrate some of the platform capabilities using azure’s web UI (called Azure Portal). All code and steps to reproduce them are in [this git repository](https://github.com/LeonardoSanBenitez/containers-for-embedded-systems).
+We’ll keep using our little practical demo with a Jetson Nano (but you can reproduce the tutorial in any Linux device) and we’ll demonstrate some of the platform capabilities using azure’s web UI (called Azure Portal). All code and steps to reproduce them are in [this git repository](https://github.com/LeonardoSanBenitez/containers-for-embedded-systems). And before we start, a huge thanks to the co-authors [Dan Danciu](https://www.linkedin.com/in/dan-danciu/) and [Ane Berasategi](https://www.linkedin.com/in/anebz/) :)
 
 ## What is an IoT Platform
 
@@ -134,6 +134,10 @@ May take a few minutes to download and run the images. Just grab a coffee and wa
 * **Remote log centralization**: the execution logs of your application, which are precious to debugging and monitoring, are now immediately available on the Portal (just select your device and click in “Troubleshoot”), something that usually would require accessing each device directly.
 * **Configuring the containers remotely**: in the last section you set the modules just by writing some parameters in the Portal, and the edge device received those instructions and made the required changes to itself. As your application will probably be updated, patched, and refactored several times, that functionality can be extremely useful.
 * **Device management**: now you can easily disable devices, rotate cryptographic keys, check the device state in real-time, among several other management features. Those management tasks may sound trivial if you have one device, but will consume a huge amount of time if you have a fleet of devices in production.
+
+![gif-spongebob-tired-after-running](images/portal_2.png)
+
+![gif-spongebob-tired-after-running](images/portal_1.png)
 
 All those features came “for free”, we didn’t did any changes to the code. However, Azure IoT solutions offer many many more features, **including ones that could greatly ease our coding**: communication between modules and between devices, message routing, plug-and-play access to third-party modules, etc. 
 

@@ -1,3 +1,5 @@
+assets/
+
 # Terraform
 .terraform/
 .terraform.lock.hcl
