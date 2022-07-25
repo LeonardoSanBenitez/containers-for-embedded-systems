@@ -45,7 +45,7 @@ Our containers won't build themselves when deploying, we need to **build them be
 3. Select the same resource group as before
 4. Give it a name (mine was tutorialcontainers), then click in Review + Create.
 
-You’ll need to take note of some values to use them later: Login server (in the Overview section), usarname and password (in the Access keys section).
+You’ll need to take note of some values to use them later: Login server (in the Overview section), usarname and password (in the Access keys section). Warning: to keep things simple I’m commiting the username and password to git, but this is a terrible security practice and you should store them in a safe place (like Azure Key Vault).
 
 As we are using ARM32 images, **the easier way to build those images is in an ARM32 device**, so ssh into your jetson and build the containers there. Note the only change in the code was the container name from "led" to "led-acr" to avoid conflicts if you have done the first part of this tutorial. Now just substitute the values that you took note before in [this script](https://github.com/LeonardoSanBenitez/containers-for-embedded-systems/blob/main/tutorial-containers-02/build_push.sh) and execute it. It will log in to the registry, build, tag, and push both docker images.
 
